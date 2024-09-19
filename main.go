@@ -105,11 +105,10 @@ func main() {
 	r.HandleFunc("/items/{id}", updateJSON).Methods("PUT")
 	r.HandleFunc("/items/{id}", deleteJSON).Methods("DELETE")
 
-	// Configure CORS
 	corsHandler := handlers.CORS(
-		handlers.AllowedOrigins([]string{"http://localhost:3000"}),        // Allow requests from this origin
-		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"}), // Allow these methods
-		handlers.AllowedHeaders([]string{"Content-Type"}),                 // Allow these headers
+		handlers.AllowedOrigins([]string{"http://localhost:3000"}), // match frontend localhost        
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"}),
+		handlers.AllowedHeaders([]string{"Content-Type"}),                 
 	)
 
 	log.Println("Starting server on :8000")
