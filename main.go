@@ -21,7 +21,6 @@ type responseBody struct {
 }
 
 func createJSON(w http.ResponseWriter, r *http.Request) {
-	log.Println("createJSON called")
 	w.Header().Set("Content-Type", "application/json")
 
 	var req requestBody
@@ -41,7 +40,6 @@ func createJSON(w http.ResponseWriter, r *http.Request) {
 }
 
 func getJSON(w http.ResponseWriter, r *http.Request) {
-	log.Println("getJSON called")
 	w.Header().Set("Content-Type", "application/json")
 
 	params := mux.Vars(r)
@@ -61,7 +59,6 @@ func getJSON(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateJSON(w http.ResponseWriter, r *http.Request) {
-	log.Println("updateJSON called")
 	w.Header().Set("Content-Type", "application/json")
 
 	var req requestBody
@@ -81,7 +78,6 @@ func updateJSON(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteJSON(w http.ResponseWriter, r *http.Request) {
-	log.Println("deleteJSON called")
 	w.Header().Set("Content-Type", "application/json")
 
 	params := mux.Vars(r)
@@ -100,21 +96,12 @@ func deleteJSON(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(resp)
 }
 
-func loggerMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("Request: %s %s", r.Method, r.URL.Path)
-		next.ServeHTTP(w, r)
-	})
-}
-
 func main() {
 	r := mux.NewRouter().StrictSlash(true)
 
-	r.Use(loggerMiddleware)
-
 	r.HandleFunc("/items", createJSON).Methods("POST")
 	r.HandleFunc("/items/{id}", getJSON).Methods("GET")
-	r.HandleFunc("/items", updateJSON).Methods("PUT")
+	r.HandleFunc("/items/{id}", updateJSON).Methods("PUT")
 	r.HandleFunc("/items/{id}", deleteJSON).Methods("DELETE")
 
 	log.Println("Starting server on :8000")
