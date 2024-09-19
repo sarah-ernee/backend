@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -49,8 +50,8 @@ func getJSON(w http.ResponseWriter, r *http.Request) {
 		Message: fmt.Sprintf("JSON object with ID %s retrieved successfully", id),
 		Data: requestBody{
 			ID:          id,
-			Title:       "Lorem",
-			Description: "The sly brown fox jumped over the fence.",
+			Title:       "Updated Title",
+			Description: "Updated description",
 		},
 	}
 
@@ -88,7 +89,7 @@ func deleteJSON(w http.ResponseWriter, r *http.Request) {
 		Data: requestBody{
 			ID:          id,
 			Title:       "Deleted Title",
-			Description: "Deleted description.",
+			Description: "Deleted description",
 		},
 	}
 
@@ -104,6 +105,13 @@ func main() {
 	r.HandleFunc("/items/{id}", updateJSON).Methods("PUT")
 	r.HandleFunc("/items/{id}", deleteJSON).Methods("DELETE")
 
+	// Configure CORS
+	corsHandler := handlers.CORS(
+		handlers.AllowedOrigins([]string{"http://localhost:3000"}),        // Allow requests from this origin
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"}), // Allow these methods
+		handlers.AllowedHeaders([]string{"Content-Type"}),                 // Allow these headers
+	)
+
 	log.Println("Starting server on :8000")
-	log.Fatal(http.ListenAndServe(":8000", r))
+	log.Fatal(http.ListenAndServe(":8000", corsHandler(r)))
 }
