@@ -71,7 +71,11 @@ func updateJSON(w http.ResponseWriter, r *http.Request) {
 
 	resp := responseBody{
 		Message: fmt.Sprintf("JSON object with ID %s updated successfully", req.ID),
-		Data:    req,
+		Data: requestBody{
+			ID:          req.ID,
+			Title:       req.Title,
+			Description: req.Description,
+		},
 	}
 
 	w.WriteHeader(http.StatusOK)
